@@ -5,7 +5,7 @@ import (
 	"golang.org/x/net/html/atom"
 )
 
-type Scraper func(node *html.Node) []*html.Node
+// Note: the structure of HN's favorites/upvoted pages may change in the future, affecting the function of this code.
 
 // Submissions and Comments happen to use the same algorithm.
 

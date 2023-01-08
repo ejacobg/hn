@@ -25,6 +25,8 @@ type Comment struct {
 	Discussion string   `json:"discussion"` // Link to the original thread.
 }
 
+// Note: the structure of HN's favorites/upvoted pages may change in the future, affecting the function of this code.
+
 func FromSubmission(node *html.Node) (Story, error) {
 	var story Story
 

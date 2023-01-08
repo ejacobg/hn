@@ -13,7 +13,7 @@ const BaseURL = "https://news.ycombinator.com"
 func Login(username, password string) (*http.Client, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
-		return nil, fmt.Errorf("login: failed to create cookiejar: %w", err)
+		return nil, fmt.Errorf("Login: failed to create cookiejar: %w", err)
 	}
 
 	client := http.Client{
@@ -30,12 +30,12 @@ func Login(username, password string) (*http.Client, error) {
 
 	resp, err := client.PostForm(BaseURL+"/login", creds)
 	if err != nil {
-		return nil, fmt.Errorf("login: login attempt failed: %w", err)
+		return nil, fmt.Errorf("Login: login attempt failed: %w", err)
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 302 {
-		return nil, fmt.Errorf("login: expected status code 302 but got %d", resp.StatusCode)
+		return nil, fmt.Errorf("Login: expected status code 302 but got %d", resp.StatusCode)
 	}
 
 	return &client, nil
@@ -45,12 +45,12 @@ func Login(username, password string) (*http.Client, error) {
 func Token(token string) (*http.Client, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
-		return nil, fmt.Errorf("token: failed to create cookiejar: %w", err)
+		return nil, fmt.Errorf("Token: failed to create cookiejar: %w", err)
 	}
 
 	URL, err := url.Parse(BaseURL)
 	if err != nil {
-		return nil, fmt.Errorf("token: could not parse URL: %w", err)
+		return nil, fmt.Errorf("Token: could not parse URL: %w", err)
 	}
 
 	cookie := http.Cookie{

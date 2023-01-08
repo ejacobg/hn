@@ -56,10 +56,10 @@ func main() {
 
 	switch saveType = args[0]; saveType {
 	case "favorite":
-		fmt.Println("select favorites")
+		// fmt.Println("select favorites")
 		saveType = "favorites"
 	case "upvoted":
-		fmt.Println("select upvoted")
+		// fmt.Println("select upvoted")
 	default:
 		fmt.Println("unrecognized save type", saveType)
 		os.Exit(1)
@@ -67,16 +67,16 @@ func main() {
 
 	switch postType = args[1]; postType {
 	case "submissions":
-		fmt.Println("from submissions")
+		// fmt.Println("from submissions")
 	case "comments":
-		fmt.Println("from comments")
+		// fmt.Println("from comments")
 	default:
 		fmt.Println("unrecognized post type", postType)
 		os.Exit(1)
 	}
 
 	username = args[2]
-	fmt.Println("where user =", username)
+	// fmt.Println("where user =", username)
 
 	// Upvoted posts require an authenticated client.
 	if saveType == "upvoted" {
@@ -88,7 +88,7 @@ func main() {
 				os.Exit(1)
 			}
 
-			fmt.Println("with password", *password)
+			// fmt.Println("with password", *password)
 
 			// Log in and obtain the token.
 			var err error
@@ -98,7 +98,7 @@ func main() {
 				os.Exit(1)
 			}
 		} else {
-			fmt.Println("with token", *token)
+			// fmt.Println("with token", *token)
 
 			var err error
 			client, err = auth.Token(*token)
@@ -125,7 +125,7 @@ func main() {
 	}
 	reqURL.RawQuery = query.Encode()
 
-	fmt.Println(reqURL.String())
+	// fmt.Println(reqURL.String())
 	resp, err := client.Get(reqURL.String())
 	if err != nil {
 		fmt.Println("Error retrieving content:", err)
@@ -133,7 +133,7 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	fmt.Println(resp.Header.Get("Content-Type"))
+	// fmt.Println(resp.Header.Get("Content-Type"))
 	doc, err := html.Parse(resp.Body)
 	if err != nil {
 		fmt.Println("Error parsing document:", err)
