@@ -66,6 +66,16 @@ func FromSubmission(node *html.Node) (Story, error) {
 	return story, nil
 }
 
+// FromSubmissions returns all parsed nodes, successful or not, and returns the last error encountered.
+func FromSubmissions(nodes []*html.Node) (submissions []Story, err error) {
+	var submission Story
+	for _, node := range nodes {
+		submission, err = FromSubmission(node)
+		submissions = append(submissions, submission)
+	}
+	return
+}
+
 func FromComment(node *html.Node) (Comment, error) {
 	var comment Comment
 
@@ -130,4 +140,14 @@ func FromComment(node *html.Node) (Comment, error) {
 	}
 
 	return comment, nil
+}
+
+// FromComments returns all parsed nodes, successful or not, and returns the last error encountered.
+func FromComments(nodes []*html.Node) (comments []Comment, err error) {
+	var comment Comment
+	for _, node := range nodes {
+		comment, err = FromComment(node)
+		comments = append(comments, comment)
+	}
+	return
 }

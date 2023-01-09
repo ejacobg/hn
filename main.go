@@ -52,7 +52,7 @@ func main() {
 
 	hn.Parse(os.Args[4:])
 	args := os.Args[1:4]
-	fmt.Println(args)
+	// fmt.Println(args)
 
 	switch saveType = args[0]; saveType {
 	case "favorite":
@@ -61,7 +61,7 @@ func main() {
 	case "upvoted":
 		// fmt.Println("select upvoted")
 	default:
-		fmt.Println("unrecognized save type", saveType)
+		fmt.Println("Unrecognized save type:", saveType)
 		os.Exit(1)
 	}
 
@@ -71,7 +71,7 @@ func main() {
 	case "comments":
 		// fmt.Println("from comments")
 	default:
-		fmt.Println("unrecognized post type", postType)
+		fmt.Println("Unrecognized post type:", postType)
 		os.Exit(1)
 	}
 
@@ -144,36 +144,27 @@ func main() {
 	switch postType {
 	case "submissions":
 		posts = scrape.Submissions(doc)
+		submissions, err := item.FromSubmissions(posts)
+		if err != nil {
+			fmt.Println("Error parsing HTML:", err)
+		}
+		output, err := json.MarshalIndent(submissions, "", "\t")
+		if err != nil {
+			fmt.Println("Error marshaling data:", err)
+			os.Exit(1)
+		}
+		fmt.Println(string(output))
 	case "comments":
 		posts = scrape.Comments(doc)
-	}
-
-	for _, post := range posts {
-		switch postType {
-		case "submissions":
-			submission, err := item.FromSubmission(post)
-			if err != nil {
-				fmt.Println("Error parsing HTML:", err)
-				os.Exit(1)
-			}
-			output, err := json.MarshalIndent(submission, "", "\t")
-			if err != nil {
-				fmt.Println("Error marshaling data:", err)
-				os.Exit(1)
-			}
-			fmt.Println(string(output) + ",")
-		case "comments":
-			comment, err := item.FromComment(post)
-			if err != nil {
-				fmt.Println("Error parsing HTML:", err)
-				os.Exit(1)
-			}
-			output, err := json.MarshalIndent(comment, "", "\t")
-			if err != nil {
-				fmt.Println("Error marshaling data:", err)
-				os.Exit(1)
-			}
-			fmt.Println(string(output) + ",")
+		comments, err := item.FromComments(posts)
+		if err != nil {
+			fmt.Println("Error parsing HTML:", err)
 		}
+		output, err := json.MarshalIndent(comments, "", "\t")
+		if err != nil {
+			fmt.Println("Error marshaling data:", err)
+			os.Exit(1)
+		}
+		fmt.Println(string(output))
 	}
 }
