@@ -6,7 +6,7 @@ import (
 )
 
 func TestLogin(t *testing.T) {
-	client, err := Login("quincinia", "throughhn")
+	client, err := Login("<username>", "<password>")
 	if err != nil {
 		t.Fatalf("login failed: %v", err)
 	}

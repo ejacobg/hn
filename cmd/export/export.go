@@ -15,19 +15,19 @@ import (
 )
 
 var (
-	hn       = flag.NewFlagSet("hn", flag.ExitOnError)
-	password = hn.String("password", "", "Password for the given user.")
-	token    = hn.String("token", "", "Value of the 'user' cookie from a logged-in session. Takes priority over password.")
-	page     = hn.Int("page", 1, "(Optional) Which page to read from.")
+	export   = flag.NewFlagSet("export", flag.ExitOnError)
+	password = export.String("password", "", "Password for the given user.")
+	token    = export.String("token", "", "Value of the 'user' cookie from a logged-in session. Takes priority over password.")
+	page     = export.Int("page", 1, "(Optional) Which page to read from.")
 )
 
 func init() {
-	hn.Usage = func() {
-		w := hn.Output()
-		fmt.Fprintln(w, "Usage of hn:")
-		fmt.Fprintln(w, "hn <favorite|upvoted> <submissions|comments> <username> [flags]")
-		fmt.Fprintln(w, "hn <-h|-help>")
-		hn.PrintDefaults()
+	export.Usage = func() {
+		w := export.Output()
+		fmt.Fprintln(w, "Usage of export:")
+		fmt.Fprintln(w, "export <favorite|upvoted> <submissions|comments> <username> [flags]")
+		fmt.Fprintln(w, "export <-h|-help>")
+		export.PrintDefaults()
 		fmt.Fprintln(w, "To view upvoted posts, a password or token is required.")
 	}
 }
@@ -36,21 +36,21 @@ func main() {
 	var saveType, itemType, username string
 	var client *http.Client
 
-	// hn requires 3 arguments other than the command name.
+	// export requires 3 arguments other than the command name.
 	if len(os.Args) < 4 {
 		// If there are less than 3 arguments, check if one of them is for the help flag.
 		for i := 1; i < len(os.Args); i++ {
 			if os.Args[i] == "-h" || os.Args[i] == "-help" {
-				hn.Usage()
+				export.Usage()
 				os.Exit(0)
 			}
 		}
 		fmt.Println("Too few arguments.")
-		hn.Usage()
+		export.Usage()
 		os.Exit(1)
 	}
 
-	hn.Parse(os.Args[4:])
+	export.Parse(os.Args[4:])
 	args := os.Args[1:4]
 	// fmt.Println(args)
 
