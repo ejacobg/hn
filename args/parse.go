@@ -19,7 +19,7 @@ func Parse(args []string, usage func()) (saveType, itemType string, code int) {
 		return "", "", 2
 	}
 
-	saveType, itemType = args[1], args[2]
+	saveType, itemType = args[0], args[1]
 
 	if !(saveType == "favorite" || saveType == "upvoted") {
 		fmt.Println("Unrecognized save type:", saveType)

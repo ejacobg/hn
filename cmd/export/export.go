@@ -45,7 +45,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	saveType, itemType, code := args.Parse(os.Args[1:], export.Usage)
+	saveType, itemType, code := args.Parse(os.Args[2:], export.Usage)
 	if code >= 0 {
 		os.Exit(code)
 	}
