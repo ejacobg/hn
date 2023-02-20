@@ -1,0 +1,37 @@
+### Obtain user cookie
+# @no-redirect
+POST https://news.ycombinator.com/login
+Content-Type: application/x-www-form-urlencoded
+
+acct={{acct}}&pw={{pw}}
+
+### Send user cookie
+GET https://news.ycombinator.com/
+Cookie: user={{user}}
+
+### Logout
+# Not sure where the auth string comes from.
+# The logout request does not remove the cookie, the redirect that happens afterwards does.
+GET https://news.ycombinator.com/logout?auth={{logout}}
+Cookie: user={{user}}
+
+### Upvoted submissions
+GET https://news.ycombinator.com/upvoted?id={{acct}}
+Cookie: user={{user}}
+
+### Upvoted comments
+GET https://news.ycombinator.com/upvoted?id={{acct}}&comments=t
+Cookie: user={{user}}
+
+### Favorite submissions
+GET https://news.ycombinator.com/favorites?id={{acct}}
+Cookie: user={{user}}
+
+### Favorite comments
+GET https://news.ycombinator.com/favorites?id={{acct}}&comments=t
+Cookie: user={{user}}
+
+### Pagination
+# If the `p` field is omitted, defaults to 1.
+GET https://news.ycombinator.com/favorites?id={{acct}}&p=2
+Cookie: user={{user}}

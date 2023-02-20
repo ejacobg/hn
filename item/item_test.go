@@ -30,7 +30,7 @@ func TestFromSubmission(t *testing.T) {
                         </td>
                     </tr>`,
 			Story: Story{
-				ID:         "34199828",
+				Item:       &Item{ID: "34199828"},
 				Title:      "Self-Hosting and HomeLab Walkthrough",
 				URL:        "https://docs.technotim.live/posts/homelab-services-tour-2022/",
 				Discussion: auth.BaseURL + "/item?id=34199828",
@@ -50,7 +50,7 @@ func TestFromSubmission(t *testing.T) {
                         </td>
                     </tr>`,
 			Story: Story{
-				ID:         "34193766",
+				Item:       &Item{ID: "34193766"},
 				Title:      "Ask HN: What is the most mind expanding book(s) you have read till date?",
 				URL:        "item?id=34193766", // URLs are kinda broken for Ask HN's, but that's ok since the discussion link should work.
 				Discussion: auth.BaseURL + "/item?id=34193766",
@@ -139,7 +139,7 @@ func TestFromComment(t *testing.T) {
                         </td>
                     </tr>`,
 			Comment: Comment{
-				ID:         "34210369",
+				Item:       &Item{ID: "34210369"},
 				Story:      "Ask HN: Concepts that clicked only years after you...",
 				Context:    auth.BaseURL + "/context?id=34210369",
 				Discussion: auth.BaseURL + "/item?id=34206219",
@@ -174,7 +174,7 @@ func TestFromComment(t *testing.T) {
                         </td>
                     </tr>`,
 			Comment: Comment{
-				ID:         "34188913",
+				Item:       &Item{ID: "34188913"},
 				Story:      "Why I'm still using Python",
 				Context:    auth.BaseURL + "/context?id=34188913",
 				Discussion: auth.BaseURL + "/item?id=34186283",
@@ -209,7 +209,7 @@ func TestFromComment(t *testing.T) {
                         </td>
                     </tr>`,
 			Comment: Comment{
-				ID:         "34148489",
+				Item:       &Item{ID: "34148489"},
 				Story:      "I have reached Vim nirvana",
 				Context:    auth.BaseURL + "/context?id=34148489",
 				Discussion: auth.BaseURL + "/item?id=34145680",
