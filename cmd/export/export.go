@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/ejacobg/hn/args"
 	"github.com/ejacobg/hn/auth"
 	"github.com/ejacobg/hn/item"
 	"github.com/ejacobg/hn/scrape"
@@ -36,46 +37,26 @@ func main() {
 	var saveType, itemType, username string
 	var client *http.Client
 
-	// export requires 3 arguments other than the command name.
-	if len(os.Args) < 4 {
-		// If there are less than 3 arguments, check if one of them is for the help flag.
-		for i := 1; i < len(os.Args); i++ {
-			if os.Args[i] == "-h" || os.Args[i] == "-help" {
-				export.Usage()
-				os.Exit(0)
-			}
-		}
+	fmt.Println(os.Args)
+
+	if len(os.Args) < 5 {
 		fmt.Println("Too few arguments.")
 		export.Usage()
 		os.Exit(1)
 	}
 
-	export.Parse(os.Args[4:])
-	args := os.Args[1:4]
-	// fmt.Println(args)
+	saveType, itemType, code := args.Parse(os.Args[1:], export.Usage)
+	if code >= 0 {
+		os.Exit(code)
+	}
+	export.Parse(os.Args[5:])
 
-	switch saveType = args[0]; saveType {
-	case "favorite":
-		// fmt.Println("select favorites")
+	if saveType == "favorite" {
+		// URL route uses "favorites"
 		saveType = "favorites"
-	case "upvoted":
-		// fmt.Println("select upvoted")
-	default:
-		fmt.Println("Unrecognized save type:", saveType)
-		os.Exit(1)
 	}
 
-	switch itemType = args[1]; itemType {
-	case "submissions":
-		// fmt.Println("from submissions")
-	case "comments":
-		// fmt.Println("from comments")
-	default:
-		fmt.Println("Unrecognized item type:", itemType)
-		os.Exit(1)
-	}
-
-	username = args[2]
+	username = os.Args[4]
 	// fmt.Println("where user =", username)
 
 	// Upvoted posts require an authenticated client.
