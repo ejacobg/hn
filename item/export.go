@@ -11,7 +11,7 @@ import (
 // Note: the structure of HN's favorites/upvoted pages may change in the future, affecting the function of this code.
 
 func FromSubmission(node *html.Node) (Story, error) {
-	var story Story
+	story := Story{Item: &Item{}}
 
 	tr := scrape.GetElementWithClass(node, atom.Tr, "athing")
 	if tr == nil {
@@ -60,7 +60,7 @@ func FromSubmissions(nodes []*html.Node) (submissions []Story, err error) {
 }
 
 func FromComment(node *html.Node) (Comment, error) {
-	var comment Comment
+	comment := Comment{Item: &Item{}}
 
 	tr := scrape.GetElementWithClass(node, atom.Tr, "athing")
 	if tr == nil {
