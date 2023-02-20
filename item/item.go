@@ -1,157 +1,26 @@
 package item
 
-import (
-	"errors"
-	"github.com/ejacobg/hn/auth"
-	"github.com/ejacobg/hn/scrape"
-	"golang.org/x/net/html"
-	"golang.org/x/net/html/atom"
-)
-
-// Story is based off, but does not follow, the structure of the official API.
-type Story struct {
-	ID         string   `json:"id"`
-	Title      string   `json:"title"`
-	URL        string   `json:"url"`
-	Discussion string   `json:"discussion"`
-	Tags       []Tag    `json:"tags,omitempty"`
-	Statuses   []Status `json:"statuses,omitempty"`
+// Item represents the smallest unit of organization within the system.
+// In order for a type to be sortable, it must embed an Item.
+type Item struct {
+	ID       string `json:"id"`
+	Category string `json:"category,omitempty"`
+	State    string `json:"state,omitempty"`
+	Entry    string `json:"-"`
 }
 
-// Comment is based off, but does not follow, the structure of the official API.
-type Comment struct {
-	ID         string   `json:"id"`
-	Story      string   `json:"parent"` // Title of the story.
-	Text       []string `json:"text"`
-	Context    string   `json:"context"`    // Link to the comment in the original thread.
-	Discussion string   `json:"discussion"` // Link to the original thread.
-	Tags       []Tag    `json:"tags,omitempty"`
-	Statuses   []Status `json:"statuses,omitempty"`
+// Story.Itemize() and Comment.Itemize() both need to have value receivers or else a []Page[Story|Item] cannot be instantiated.
+// In order to share the underlying Item while still using a value receiver, a *Item needs to be embedded.
+
+// Alternatively, you may instantiate a []Page[*Story|*Item], which would allow embedding of Item (instead of *Item).
+// In this case, you would have to use a pointer receiver for the given methods.
+
+type Itemizer interface {
+	// Itemize should return the object's embedded Item in order to be edited by the sorter.
+	Itemize() *Item
 }
 
-// Note: the structure of HN's favorites/upvoted pages may change in the future, affecting the function of this code.
-
-func FromSubmission(node *html.Node) (Story, error) {
-	var story Story
-
-	tr := scrape.GetElementWithClass(node, atom.Tr, "athing")
-	if tr == nil {
-		return story, errors.New("FromSubmission: could not find tr.athing")
-	}
-
-	span := scrape.GetElementWithClass(tr, atom.Span, "titleline")
-	if span == nil {
-		return story, errors.New("FromSubmission: could not find tr.athing span.titleline")
-	}
-
-	var a *html.Node
-	for a = span.FirstChild; a != nil; a = a.NextSibling {
-		if a.Type == html.ElementNode && a.DataAtom == atom.A {
-			break
-		}
-	}
-	if a == nil {
-		return story, errors.New("FromSubmission: could not find tr.athing span.titleline > a")
-	}
-
-	for _, attr := range tr.Attr {
-		if attr.Key == "id" {
-			story.ID = attr.Val
-		}
-	}
-	story.Title = a.FirstChild.Data
-	for _, attr := range a.Attr {
-		if attr.Key == "href" {
-			story.URL = attr.Val
-		}
-	}
-	story.Discussion = auth.BaseURL + "/item?id=" + story.ID
-
-	return story, nil
-}
-
-// FromSubmissions returns all parsed nodes, successful or not, and returns the last error encountered.
-func FromSubmissions(nodes []*html.Node) (submissions []Story, err error) {
-	var submission Story
-	for _, node := range nodes {
-		submission, err = FromSubmission(node)
-		submissions = append(submissions, submission)
-	}
-	return
-}
-
-func FromComment(node *html.Node) (Comment, error) {
-	var comment Comment
-
-	tr := scrape.GetElementWithClass(node, atom.Tr, "athing")
-	if tr == nil {
-		return comment, errors.New("FromComment: could not find tr.athing")
-	}
-
-	story := scrape.GetElementWithClass(tr, atom.Span, "onstory")
-	if story == nil {
-		return comment, errors.New("FromComment: could not find tr.athing span.onstory")
-	}
-
-	var a *html.Node
-	for a = story.FirstChild; a != nil; a = a.NextSibling {
-		if a.Type == html.ElementNode && a.DataAtom == atom.A {
-			break
-		}
-	}
-	if a == nil {
-		return comment, errors.New("FromComment: could not find tr.athing span.onstory > a")
-	}
-
-	div := scrape.GetElementWithClass(tr, atom.Div, "comment")
-	if div == nil {
-		return comment, errors.New("FromComment: could not find tr.athing div.comment")
-	}
-
-	var span *html.Node
-	for span = div.FirstChild; span != nil; span = span.NextSibling {
-		if span.Type == html.ElementNode && span.DataAtom == atom.Span {
-			break
-		}
-	}
-	if span == nil {
-		return comment, errors.New("FromComment: could not find tr.athing div.comment > span")
-	}
-
-	// Grab all text nodes.
-	// The HTML returned from the server DOES NOT close its <p> tags, which results in an extra text node and whitespace being created after parsing.
-	// I will leave these artifacts alone since they are inconsequential to the results of the program. The tests will account for these errors though.
-	text := scrape.FindNodes(span, func(node *html.Node) (bool, bool) {
-		return node.Type == html.TextNode, false
-	})
-
-	for _, attr := range tr.Attr {
-		if attr.Key == "id" {
-			comment.ID = attr.Val
-		}
-	}
-	if a.FirstChild != nil {
-		comment.Story = a.FirstChild.Data
-	}
-	for _, t := range text {
-		comment.Text = append(comment.Text, t.Data)
-	}
-	comment.Context = auth.BaseURL + "/context?id=" + comment.ID
-	for _, attr := range a.Attr {
-		if attr.Key == "href" {
-			comment.Discussion = auth.BaseURL + "/" + attr.Val
-		}
-	}
-
-	return comment, nil
-}
-
-// FromComments returns all parsed nodes, successful or not, and returns the last error encountered.
-func FromComments(nodes []*html.Node) (comments []Comment, err error) {
-	var comment Comment
-	for _, node := range nodes {
-		comment, err = FromComment(node)
-		comments = append(comments, comment)
-	}
-	return
+type Detailer interface {
+	// Details should print a brief summary to the screen about the content of an Item.
+	Details()
 }
