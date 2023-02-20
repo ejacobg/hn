@@ -33,7 +33,7 @@ func init() {
 }
 
 func main() {
-	var saveType, postType, username string
+	var saveType, itemType, username string
 	var client *http.Client
 
 	// hn requires 3 arguments other than the command name.
@@ -65,13 +65,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	switch postType = args[1]; postType {
+	switch itemType = args[1]; itemType {
 	case "submissions":
 		// fmt.Println("from submissions")
 	case "comments":
 		// fmt.Println("from comments")
 	default:
-		fmt.Println("Unrecognized post type:", postType)
+		fmt.Println("Unrecognized item type:", itemType)
 		os.Exit(1)
 	}
 
@@ -114,7 +114,7 @@ func main() {
 	query := url.Values{}
 	query.Set("id", username)
 	query.Set("p", strconv.Itoa(*page))
-	if postType == "comments" {
+	if itemType == "comments" {
 		query.Set("comments", "t")
 	}
 
@@ -141,7 +141,7 @@ func main() {
 	}
 
 	var posts []*html.Node
-	switch postType {
+	switch itemType {
 	case "submissions":
 		posts = scrape.Submissions(doc)
 		submissions, err := item.FromSubmissions(posts)
