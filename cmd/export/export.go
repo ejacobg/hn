@@ -1,13 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/ejacobg/hn/args"
 	"github.com/ejacobg/hn/auth"
-	"github.com/ejacobg/hn/item"
-	"github.com/ejacobg/hn/scrape"
+	"github.com/ejacobg/hn/export"
 	"golang.org/x/net/html"
 	"net/http"
 	"os"
@@ -34,8 +32,6 @@ func main() {
 	exportFlags.StringVar(&user.Password, "password", "", "Password for the given user.")
 	exportFlags.StringVar(&user.Token, "token", "", "Value of the 'user' cookie from a logged-in session. Takes priority over password.")
 
-	// fmt.Println(os.Args)
-
 	if len(os.Args) < 5 {
 		fmt.Println("Too few arguments.")
 		exportFlags.Usage()
@@ -55,9 +51,8 @@ func main() {
 
 	user.Username = os.Args[4]
 
-	var client *http.Client
-
 	// Upvoted posts require an authenticated client.
+	var client *http.Client
 	if saveType == "upvoted" {
 		var err error
 		client, err = user.NewClient()
@@ -68,13 +63,14 @@ func main() {
 		client = http.DefaultClient
 	}
 
+	// Generate request.
 	reqURL, err := user.NewRequest(saveType, itemType, *page)
 	if err != nil {
 		fmt.Println("Failed to create URL:", err)
 		os.Exit(1)
 	}
 
-	// fmt.Println(reqURL.String())
+	// Send request.
 	resp, err := client.Get(reqURL.String())
 	if err != nil {
 		fmt.Println("Error retrieving content:", err)
@@ -82,38 +78,22 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	// fmt.Println(resp.Header.Get("Content-Type"))
+	// Parse request.
 	doc, err := html.Parse(resp.Body)
 	if err != nil {
 		fmt.Println("Error parsing document:", err)
 		os.Exit(1)
 	}
 
-	var posts []*html.Node
 	switch itemType {
 	case "submissions":
-		posts = scrape.Submissions(doc)
-		submissions, err := item.FromSubmissions(posts)
-		if err != nil {
-			fmt.Println("Error parsing HTML:", err)
-		}
-		output, err := json.MarshalIndent(submissions, "", "\t")
-		if err != nil {
-			fmt.Println("Error marshaling data:", err)
-			os.Exit(1)
-		}
-		fmt.Println(string(output))
+		err = export.Submissions(doc, os.Stdout)
 	case "comments":
-		posts = scrape.Comments(doc)
-		comments, err := item.FromComments(posts)
-		if err != nil {
-			fmt.Println("Error parsing HTML:", err)
-		}
-		output, err := json.MarshalIndent(comments, "", "\t")
-		if err != nil {
-			fmt.Println("Error marshaling data:", err)
-			os.Exit(1)
-		}
-		fmt.Println(string(output))
+		err = export.Comments(doc, os.Stdout)
+	}
+
+	if err != nil {
+		fmt.Println("Error exporting items:", err)
+		os.Exit(1)
 	}
 }

@@ -1,7 +1,8 @@
-package item
+package export
 
 import (
 	"github.com/ejacobg/hn/auth"
+	"github.com/ejacobg/hn/item"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 	"strings"
@@ -12,7 +13,7 @@ func TestFromSubmission(t *testing.T) {
 	tests := []struct {
 		Name string
 		HTML string
-		Story
+		item.Story
 	}{
 		{
 			Name: "Story",
@@ -29,8 +30,8 @@ func TestFromSubmission(t *testing.T) {
                                 class="sitebit comhead"> (<a href="from?site=technotim.live"><span class="sitestr">technotim.live</span></a>)</span></span>
                         </td>
                     </tr>`,
-			Story: Story{
-				Item:       &Item{ID: "34199828"},
+			Story: item.Story{
+				Item:       &item.Item{ID: "34199828"},
 				Title:      "Self-Hosting and HomeLab Walkthrough",
 				URL:        "https://docs.technotim.live/posts/homelab-services-tour-2022/",
 				Discussion: auth.BaseURL + "/item?id=34199828",
@@ -49,8 +50,8 @@ func TestFromSubmission(t *testing.T) {
                         <td class="title"><span class="titleline"><a href="item?id=34193766">Ask HN: What is the most mind expanding book(s) you have read till date?</a></span>
                         </td>
                     </tr>`,
-			Story: Story{
-				Item:       &Item{ID: "34193766"},
+			Story: item.Story{
+				Item:       &item.Item{ID: "34193766"},
 				Title:      "Ask HN: What is the most mind expanding book(s) you have read till date?",
 				URL:        "item?id=34193766", // URLs are kinda broken for Ask HN's, but that's ok since the discussion link should work.
 				Discussion: auth.BaseURL + "/item?id=34193766",
@@ -76,7 +77,7 @@ func TestFromSubmission(t *testing.T) {
 			// 	t.Log(attr.Key, attr.Val)
 			// }
 
-			story, err := FromSubmission(node)
+			story, err := fromSubmission(node)
 			if err != nil {
 				t.Fatalf("Could not create item: %v", err)
 			}
@@ -109,7 +110,7 @@ func TestFromComment(t *testing.T) {
 		Name       string
 		TextLength int
 		HTML       string
-		Comment
+		item.Comment
 	}{
 		{
 			Name:       "Top-Level Comment",
@@ -138,8 +139,8 @@ func TestFromComment(t *testing.T) {
                             </div>
                         </td>
                     </tr>`,
-			Comment: Comment{
-				Item:       &Item{ID: "34210369"},
+			Comment: item.Comment{
+				Item:       &item.Item{ID: "34210369"},
 				Story:      "Ask HN: Concepts that clicked only years after you...",
 				Context:    auth.BaseURL + "/context?id=34210369",
 				Discussion: auth.BaseURL + "/item?id=34206219",
@@ -173,8 +174,8 @@ func TestFromComment(t *testing.T) {
                             </div>
                         </td>
                     </tr>`,
-			Comment: Comment{
-				Item:       &Item{ID: "34188913"},
+			Comment: item.Comment{
+				Item:       &item.Item{ID: "34188913"},
 				Story:      "Why I'm still using Python",
 				Context:    auth.BaseURL + "/context?id=34188913",
 				Discussion: auth.BaseURL + "/item?id=34186283",
@@ -208,8 +209,8 @@ func TestFromComment(t *testing.T) {
                             </div>
                         </td>
                     </tr>`,
-			Comment: Comment{
-				Item:       &Item{ID: "34148489"},
+			Comment: item.Comment{
+				Item:       &item.Item{ID: "34148489"},
 				Story:      "I have reached Vim nirvana",
 				Context:    auth.BaseURL + "/context?id=34148489",
 				Discussion: auth.BaseURL + "/item?id=34145680",
@@ -235,7 +236,7 @@ func TestFromComment(t *testing.T) {
 			// 	t.Log(attr.Key, attr.Val)
 			// }
 
-			comment, err := FromComment(node)
+			comment, err := fromComment(node)
 			if err != nil {
 				t.Fatalf("Could not create item: %v", err)
 			}

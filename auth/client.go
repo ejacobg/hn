@@ -17,7 +17,7 @@ type User struct {
 func (u User) NewClient() (*http.Client, error) {
 	// If the token is missing, log in with the password to obtain it.
 	if u.Token == "" {
-		// If the password is not given, fail.
+		// If the password is missing, fail.
 		if u.Password == "" {
 			return nil, errors.New("NewClient: either token or password are required")
 		}

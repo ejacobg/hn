@@ -1,26 +1,27 @@
-package item
+package export
 
 import (
 	"errors"
 	"github.com/ejacobg/hn/auth"
-	"github.com/ejacobg/hn/scrape"
+	"github.com/ejacobg/hn/internal/scrape"
+	"github.com/ejacobg/hn/item"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )
 
 // Note: the structure of HN's favorites/upvoted pages may change in the future, affecting the function of this code.
 
-func FromSubmission(node *html.Node) (Story, error) {
-	story := Story{Item: &Item{}}
+func fromSubmission(node *html.Node) (item.Story, error) {
+	story := item.Story{Item: &item.Item{}}
 
 	tr := scrape.GetElementWithClass(node, atom.Tr, "athing")
 	if tr == nil {
-		return story, errors.New("FromSubmission: could not find tr.athing")
+		return story, errors.New("fromSubmission: could not find tr.athing")
 	}
 
 	span := scrape.GetElementWithClass(tr, atom.Span, "titleline")
 	if span == nil {
-		return story, errors.New("FromSubmission: could not find tr.athing span.titleline")
+		return story, errors.New("fromSubmission: could not find tr.athing span.titleline")
 	}
 
 	var a *html.Node
@@ -30,7 +31,7 @@ func FromSubmission(node *html.Node) (Story, error) {
 		}
 	}
 	if a == nil {
-		return story, errors.New("FromSubmission: could not find tr.athing span.titleline > a")
+		return story, errors.New("fromSubmission: could not find tr.athing span.titleline > a")
 	}
 
 	for _, attr := range tr.Attr {
@@ -49,27 +50,27 @@ func FromSubmission(node *html.Node) (Story, error) {
 	return story, nil
 }
 
-// FromSubmissions returns all parsed nodes, successful or not, and returns the last error encountered.
-func FromSubmissions(nodes []*html.Node) (submissions []Story, err error) {
-	var submission Story
+// fromSubmissions returns all parsed nodes, successful or not, and returns the last error encountered.
+func fromSubmissions(nodes []*html.Node) (submissions []item.Story, err error) {
+	var submission item.Story
 	for _, node := range nodes {
-		submission, err = FromSubmission(node)
+		submission, err = fromSubmission(node)
 		submissions = append(submissions, submission)
 	}
 	return
 }
 
-func FromComment(node *html.Node) (Comment, error) {
-	comment := Comment{Item: &Item{}}
+func fromComment(node *html.Node) (item.Comment, error) {
+	comment := item.Comment{Item: &item.Item{}}
 
 	tr := scrape.GetElementWithClass(node, atom.Tr, "athing")
 	if tr == nil {
-		return comment, errors.New("FromComment: could not find tr.athing")
+		return comment, errors.New("fromComment: could not find tr.athing")
 	}
 
 	story := scrape.GetElementWithClass(tr, atom.Span, "onstory")
 	if story == nil {
-		return comment, errors.New("FromComment: could not find tr.athing span.onstory")
+		return comment, errors.New("fromComment: could not find tr.athing span.onstory")
 	}
 
 	var a *html.Node
@@ -79,12 +80,12 @@ func FromComment(node *html.Node) (Comment, error) {
 		}
 	}
 	if a == nil {
-		return comment, errors.New("FromComment: could not find tr.athing span.onstory > a")
+		return comment, errors.New("fromComment: could not find tr.athing span.onstory > a")
 	}
 
 	div := scrape.GetElementWithClass(tr, atom.Div, "comment")
 	if div == nil {
-		return comment, errors.New("FromComment: could not find tr.athing div.comment")
+		return comment, errors.New("fromComment: could not find tr.athing div.comment")
 	}
 
 	var span *html.Node
@@ -94,7 +95,7 @@ func FromComment(node *html.Node) (Comment, error) {
 		}
 	}
 	if span == nil {
-		return comment, errors.New("FromComment: could not find tr.athing div.comment > span")
+		return comment, errors.New("fromComment: could not find tr.athing div.comment > span")
 	}
 
 	// Grab all text nodes.
@@ -125,11 +126,11 @@ func FromComment(node *html.Node) (Comment, error) {
 	return comment, nil
 }
 
-// FromComments returns all parsed nodes, successful or not, and returns the last error encountered.
-func FromComments(nodes []*html.Node) (comments []Comment, err error) {
-	var comment Comment
+// fromComments returns all parsed nodes, successful or not, and returns the last error encountered.
+func fromComments(nodes []*html.Node) (comments []item.Comment, err error) {
+	var comment item.Comment
 	for _, node := range nodes {
-		comment, err = FromComment(node)
+		comment, err = fromComment(node)
 		comments = append(comments, comment)
 	}
 	return
