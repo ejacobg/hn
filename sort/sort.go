@@ -11,9 +11,9 @@ type Sorter interface {
 	item.Itemizer
 }
 
-func Items[I Sorter](saveType, itemType string) error {
+func Items[I Sorter](directory string) error {
 	// Read exports and category files from correct directory.
-	categories, pages, err := readDirectory[I](saveType, itemType)
+	categories, pages, err := readDirectory[I](directory)
 	if err != nil {
 		return fmt.Errorf("items: failed to read directory: %w", err)
 	}
@@ -23,7 +23,6 @@ func Items[I Sorter](saveType, itemType string) error {
 	categorizeItems(categories, index)
 
 	// Show CLI
-	directory := "./" + saveType + "/" + itemType
 	var input rune
 Loop:
 	for i := 0; i < len(pages); i++ {
@@ -98,7 +97,7 @@ Loop:
 
 	// Perform cleanup.
 	removeDuplicateItems(categories, index)
-	addMissingItems(saveType, itemType, index)
+	addMissingItems(directory, index)
 
 	return nil
 }

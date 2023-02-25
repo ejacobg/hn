@@ -108,8 +108,7 @@ func removeDuplicateItems(categories []string, index *map[string]*item.Item) {
 	}
 }
 
-func addMissingItems(saveType, itemType string, index *map[string]*item.Item) {
-	directory := "./" + saveType + "/" + itemType
+func addMissingItems(directory string, index *map[string]*item.Item) {
 	for _, itm := range *index {
 		if itm.Category == "" {
 			continue

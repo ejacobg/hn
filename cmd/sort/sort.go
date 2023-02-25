@@ -9,7 +9,20 @@ import (
 	"os"
 )
 
-var sortFlags = flag.NewFlagSet("sort", flag.ExitOnError)
+var (
+	sortFlags = flag.NewFlagSet("sort", flag.ExitOnError)
+	directory = flag.String("directory", "", "Custom directory to read from. Must be structured correctly.")
+)
+
+func init() {
+	sortFlags.Usage = func() {
+		w := sortFlags.Output()
+		fmt.Fprintln(w, "Usage of sort:")
+		fmt.Fprintln(w, "sort <favorite|upvoted> <submissions|comments> [flags]")
+		fmt.Fprintln(w, "sort <-h|-help>")
+		sortFlags.PrintDefaults()
+	}
+}
 
 func main() {
 	if len(os.Args) < 4 {
@@ -22,13 +35,18 @@ func main() {
 	if code >= 0 {
 		os.Exit(code)
 	}
+	sortFlags.Parse(os.Args[4:])
+
+	if *directory == "" {
+		*directory = "./" + saveType + "/" + itemType
+	}
 
 	var err error
 	switch itemType {
 	case "submissions":
-		err = sort.Items[item.Story](saveType, itemType)
+		err = sort.Items[item.Story](*directory)
 	case "comments":
-		err = sort.Items[item.Comment](saveType, itemType)
+		err = sort.Items[item.Comment](*directory)
 	}
 
 	if err != nil {
