@@ -1,10 +1,5 @@
 package item
 
-import (
-	"encoding/json"
-	"os"
-)
-
 // Item represents the smallest unit of organization within the system.
 // In order for a type to be sortable, it must embed an Item.
 type Item struct {
@@ -28,19 +23,4 @@ type Itemizer interface {
 type Detailer interface {
 	// Details should print a brief summary to the screen about the content of an Item.
 	Details()
-}
-
-// FromList parses a given JSON file and returns a slice of its contents.
-// The content of the given JSON file should be an array of objects (e.g. an array of Story).
-func FromList[I Itemizer](path string) ([]I, error) {
-	file, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	var i []I
-	err = json.Unmarshal(file, &i)
-	if err != nil {
-		return nil, err
-	}
-	return i, nil
 }

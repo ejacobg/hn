@@ -13,7 +13,7 @@ type Sorter interface {
 
 func Items[I Sorter](directory string) error {
 	// Read exports and category files from correct directory.
-	categories, pages, err := readDirectory[I](directory)
+	categories, pages, err := item.ReadDirectory[I](directory)
 	if err != nil {
 		return fmt.Errorf("items: failed to read directory: %w", err)
 	}
