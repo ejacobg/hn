@@ -12,7 +12,7 @@ import (
 // All valid lines have the form: [<status>] [<entry>](<id>)
 var validLine = regexp.MustCompile(`\[(.*)\] \[(.*)\]\((.*)\)`)
 
-func newItemIndex[I item.Itemizer](pages []Page[I]) *map[string]*item.Item {
+func newItemIndex[I item.Itemizer](pages []item.Page[I]) *map[string]*item.Item {
 	index := make(map[string]*item.Item)
 
 	for i := 0; i < len(pages); i++ {
