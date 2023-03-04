@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/ejacobg/hn/args"
 	"github.com/ejacobg/hn/auth"
 	"github.com/ejacobg/hn/export"
 	"golang.org/x/net/html"
+	"io"
 	"net/http"
 	"os"
 )
@@ -85,15 +87,28 @@ func main() {
 		os.Exit(1)
 	}
 
+	var items any
 	switch itemType {
 	case "submissions":
-		err = export.Submissions(doc, os.Stdout)
+		items, err = export.Submissions(doc)
 	case "comments":
-		err = export.Comments(doc, os.Stdout)
+		items, err = export.Comments(doc)
 	}
 
 	if err != nil {
 		fmt.Println("Error exporting items:", err)
 		os.Exit(1)
 	}
+
+	write(items, os.Stdout)
+}
+
+func write(data any, dst io.Writer) error {
+	output, err := json.MarshalIndent(data, "", "\t")
+	if err != nil {
+		return err
+	}
+
+	_, err = dst.Write(output)
+	return err
 }

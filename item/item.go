@@ -20,6 +20,18 @@ type Itemizer interface {
 	Itemize() *Item
 }
 
+// Itemizers will convert a slice of itemizer values into a slice of itemizer interfaces.
+func Itemizers[I Itemizer](items []I) []Itemizer {
+	if items == nil {
+		return nil
+	}
+	izs := make([]Itemizer, len(items))
+	for i, itm := range items {
+		izs[i] = itm
+	}
+	return izs
+}
+
 type Detailer interface {
 	// Details should print a brief summary to the screen about the content of an Item.
 	Details()
