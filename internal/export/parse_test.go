@@ -1,7 +1,7 @@
 package export
 
 import (
-	"github.com/ejacobg/hn/auth"
+	"github.com/ejacobg/hn/internal/auth"
 	"github.com/ejacobg/hn/item"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"

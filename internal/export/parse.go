@@ -2,7 +2,7 @@ package export
 
 import (
 	"errors"
-	"github.com/ejacobg/hn/auth"
+	"github.com/ejacobg/hn/internal/auth"
 	"github.com/ejacobg/hn/internal/scrape"
 	"github.com/ejacobg/hn/item"
 	"golang.org/x/net/html"

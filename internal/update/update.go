@@ -2,10 +2,10 @@ package update
 
 import (
 	"fmt"
-	"github.com/ejacobg/hn/auth"
-	"github.com/ejacobg/hn/export"
+	"github.com/ejacobg/hn/internal/auth"
+	"github.com/ejacobg/hn/internal/export"
+	"github.com/ejacobg/hn/internal/sort"
 	"github.com/ejacobg/hn/item"
-	"github.com/ejacobg/hn/sort"
 	"strconv"
 	"time"
 )

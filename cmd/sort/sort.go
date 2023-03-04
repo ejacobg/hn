@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/ejacobg/hn/args"
-	"github.com/ejacobg/hn/item"
-	"github.com/ejacobg/hn/sort"
+	"github.com/ejacobg/hn/internal/args"
+	"github.com/ejacobg/hn/internal/item"
+	"github.com/ejacobg/hn/internal/sort"
 	"os"
 )
 

@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/ejacobg/hn/args"
-	"github.com/ejacobg/hn/auth"
-	"github.com/ejacobg/hn/item"
-	"github.com/ejacobg/hn/update"
+	"github.com/ejacobg/hn/internal/args"
+	"github.com/ejacobg/hn/internal/auth"
+	"github.com/ejacobg/hn/internal/item"
+	"github.com/ejacobg/hn/internal/update"
 	"os"
 )
 
