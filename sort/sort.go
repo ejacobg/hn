@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ejacobg/hn/item"
 	"os"
+	"path/filepath"
 )
 
 type Sorter interface {
@@ -93,6 +94,13 @@ Loop:
 		if err != nil {
 			fmt.Println("Error writing to file:", err)
 		}
+	}
+
+	// Refresh the categories slice. The CLI will create new category files if they do not exist.
+	// If a new category file is created, the categories slice will not be updated, which affects the cleaning operations.
+	categories, err = filepath.Glob(directory + "/*.md")
+	if err != nil {
+		return fmt.Errorf("items: failed to find category files: %w", err)
 	}
 
 	// Perform cleanup.

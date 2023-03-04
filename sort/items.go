@@ -65,6 +65,8 @@ func resolveCategoryConflict(entry, curr, new string) (keep bool) {
 	return input == 'K'
 }
 
+// removeDuplicateItems will read through all the given category files and remove all duplicate or incorrect entries.
+// Note: the sorting operation may create new category files. Make sure to pass in all category files to this function or else they will not be cleaned up.
 func removeDuplicateItems(categories []string, index *map[string]*item.Item) {
 	for _, fileName := range categories {
 		// keep holds lines that will be preserved.
