@@ -13,6 +13,7 @@ import (
 var (
 	updateFlags = flag.NewFlagSet("update", flag.ExitOnError)
 	directory   = updateFlags.String("directory", "./<favorite|upvoted>/<submissions|comments>", "(Optional) Directory to be updated.")
+	shuffle     = updateFlags.Bool("shuffle", false, "Shuffle items in the given directory.")
 )
 
 func init() {
@@ -20,6 +21,7 @@ func init() {
 		w := updateFlags.Output()
 		fmt.Fprintln(w, "Usage of update:")
 		fmt.Fprintln(w, "update <favorite|upvoted> <submissions|comments> <username> [flags]")
+		fmt.Fprintln(w, "update <favorite|upvoted> <submissions|comments> -shuffle")
 		fmt.Fprintln(w, "update <-h|-help>")
 		updateFlags.PrintDefaults()
 		fmt.Fprintln(w, "To view upvoted posts, a password or token is required.")
@@ -44,9 +46,22 @@ func main() {
 	updateFlags.Parse(os.Args[5:])
 
 	user.Username = os.Args[4]
+	if user.Username == "-shuffle" {
+		*shuffle = true
+	}
 
 	if *directory == "./<favorite|upvoted>/<submissions|comments>" {
 		*directory = "./" + saveType + "/" + itemType
+	}
+
+	if *shuffle {
+		switch itemType {
+		case "submissions":
+			update.ShuffleDir[item.Story](*directory, 30)
+		case "comments":
+			update.ShuffleDir[item.Comment](*directory, 30)
+		}
+		os.Exit(0)
 	}
 
 	var err error

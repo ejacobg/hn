@@ -1,6 +1,7 @@
 package update
 
 import (
+	"fmt"
 	"github.com/ejacobg/hn/item"
 )
 
@@ -51,6 +52,22 @@ func Shuffle[I item.Itemizer](pages []item.Page[I], limit int) {
 
 			// Keep the first 30 elements.
 			pages[i].Items = pages[i].Items[:limit]
+		}
+	}
+}
+
+func ShuffleDir[I item.Itemizer](directory string, limit int) {
+	_, pages, err := item.ReadDirectory[I](directory)
+	if err != nil {
+		fmt.Printf("ShuffleDir: failed to read directory %q: %w\n", directory, err)
+	}
+
+	Shuffle[I](pages, limit)
+
+	for i := range pages {
+		err := pages[i].Write()
+		if err != nil {
+			fmt.Println("Error writing to file:", err)
 		}
 	}
 }
