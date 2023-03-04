@@ -19,7 +19,7 @@ func Items[I Sorter](directory string) error {
 	}
 
 	// Read in reading statuses and categories.
-	index := newItemIndex(pages)
+	index := NewItemIndex(pages)
 	categorizeItems(categories, index)
 
 	// Show CLI

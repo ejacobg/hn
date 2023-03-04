@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/ejacobg/hn/args"
 	"github.com/ejacobg/hn/auth"
+	"github.com/ejacobg/hn/item"
+	"github.com/ejacobg/hn/update"
 	"os"
 )
 
@@ -41,25 +43,21 @@ func main() {
 	}
 	updateFlags.Parse(os.Args[5:])
 
-	if saveType == "favorite" {
-		// URL route uses "favorites"
-		saveType = "favorites"
-	}
-
 	user.Username = os.Args[4]
 
-	// var client *http.Client
-	//
-	// // Upvoted posts require an authenticated client.
-	// if saveType == "upvoted" {
-	// 	var err error
-	// 	client, err = user.NewClient()
-	// 	if err != nil {
-	// 		fmt.Println("Error creating client:", err)
-	// 	}
-	// } else {
-	// 	client = http.DefaultClient
-	// }
+	if *directory == "./<favorite|upvoted>/<submissions|comments>" {
+		*directory = "./" + saveType + "/" + itemType
+	}
 
-	fmt.Println("Updating", saveType, itemType)
+	var err error
+	switch itemType {
+	case "submissions":
+		err = update.Items[item.Story](*directory, saveType, itemType, user)
+	case "comments":
+		err = update.Items[item.Comment](*directory, saveType, itemType, user)
+	}
+
+	if err != nil {
+		fmt.Println("Error updating items:", err)
+	}
 }
