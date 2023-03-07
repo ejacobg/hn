@@ -3,8 +3,8 @@ package export
 import (
 	"errors"
 	"github.com/ejacobg/hn/internal/auth"
+	"github.com/ejacobg/hn/internal/item"
 	"github.com/ejacobg/hn/internal/scrape"
-	"github.com/ejacobg/hn/item"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
 )

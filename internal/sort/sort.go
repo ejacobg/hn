@@ -2,7 +2,7 @@ package sort
 
 import (
 	"fmt"
-	"github.com/ejacobg/hn/item"
+	"github.com/ejacobg/hn/internal/item"
 	"os"
 	"path/filepath"
 )

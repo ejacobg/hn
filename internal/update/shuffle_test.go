@@ -1,7 +1,7 @@
 package update
 
 import (
-	"github.com/ejacobg/hn/item"
+	"github.com/ejacobg/hn/internal/item"
 	"golang.org/x/exp/slices"
 	"testing"
 )

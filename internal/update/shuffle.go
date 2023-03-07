@@ -2,7 +2,7 @@ package update
 
 import (
 	"fmt"
-	"github.com/ejacobg/hn/item"
+	"github.com/ejacobg/hn/internal/item"
 )
 
 // Shuffle will redistribute the items across all the given pages.
@@ -59,7 +59,7 @@ func Shuffle[I item.Itemizer](pages []item.Page[I], limit int) {
 func ShuffleDir[I item.Itemizer](directory string, limit int) {
 	_, pages, err := item.ReadDirectory[I](directory)
 	if err != nil {
-		fmt.Printf("ShuffleDir: failed to read directory %q: %w\n", directory, err)
+		fmt.Printf("ShuffleDir: failed to read directory %q: %v\n", directory, err)
 	}
 
 	Shuffle[I](pages, limit)

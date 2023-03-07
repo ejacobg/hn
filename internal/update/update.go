@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/ejacobg/hn/internal/auth"
 	"github.com/ejacobg/hn/internal/export"
+	"github.com/ejacobg/hn/internal/item"
 	"github.com/ejacobg/hn/internal/sort"
-	"github.com/ejacobg/hn/item"
 	"strconv"
 	"time"
 )
@@ -19,16 +19,6 @@ func Items[I item.Itemizer](directory, saveType, itemType string, user auth.User
 
 	// Obtain an index of all the items present in the directory.
 	index := sort.NewItemIndex(pages)
-
-	// Transform the pages slice into a generic form.
-	// itemizers := make([]item.Page[item.Itemizer], len(pages))
-	// for i := 0; i < len(pages); i++ {
-	// 	page := item.Page[item.Itemizer]{
-	// 		Path:  pages[i].Path,
-	// 		Items: item.Itemizers(pages[i].Items),
-	// 	}
-	// 	itemizers = append(itemizers, page)
-	// }
 
 	var client *export.Client
 	switch saveType {
@@ -96,12 +86,7 @@ func Items[I item.Itemizer](directory, saveType, itemType string, user auth.User
 	for i := len(exported) - 1; i >= 0; i-- {
 		// Save the update files in their own directory.
 		exported[i].Path = directory + "/exported/updated/" + strconv.Itoa(len(pages)+len(exported)-i) + ".json"
-
-		// itemizers = append(itemizers, exported[i])
 	}
-
-	// Reorder all of our saved items.
-	// Shuffle(itemizers, 30)
 
 	// Write out all of our updated items.
 	for i := range exported {

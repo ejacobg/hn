@@ -2,7 +2,7 @@ package sort
 
 import (
 	"fmt"
-	"github.com/ejacobg/hn/item"
+	"github.com/ejacobg/hn/internal/item"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -10,7 +10,7 @@ import (
 )
 
 // All valid lines have the form: [<status>] [<entry>](<id>)
-var validLine = regexp.MustCompile(`\[(.*)\] \[(.*)\]\((.*)\)`)
+var validLine = regexp.MustCompile(`\[(.*)] \[(.*)]\((.*)\)`)
 
 func NewItemIndex[I item.Itemizer](pages []item.Page[I]) *map[string]*item.Item {
 	index := make(map[string]*item.Item)

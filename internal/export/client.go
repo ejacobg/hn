@@ -3,19 +3,19 @@ package export
 import (
 	"errors"
 	"fmt"
-	auth2 "github.com/ejacobg/hn/internal/auth"
-	"github.com/ejacobg/hn/item"
+	"github.com/ejacobg/hn/internal/auth"
+	"github.com/ejacobg/hn/internal/item"
 	"golang.org/x/net/html"
 	"net/http"
 )
 
 type Client struct {
-	user   auth2.User
+	user   auth.User
 	client *http.Client
 }
 
 // NewClient returns a Client authenticated with the given user.
-func NewClient(user auth2.User) (*Client, error) {
+func NewClient(user auth.User) (*Client, error) {
 	client := Client{user: user}
 
 	var err error
@@ -27,13 +27,13 @@ func NewClient(user auth2.User) (*Client, error) {
 		}
 
 		// Log in and obtain the token.
-		client.client, err = auth2.Login(user.Username, user.Password)
+		client.client, err = auth.Login(user.Username, user.Password)
 		if err != nil {
 			return nil, err
 		}
 	} else {
 		// Otherwise, authenticate with the token.
-		client.client, err = auth2.Token(user.Token)
+		client.client, err = auth.Token(user.Token)
 		if err != nil {
 			return nil, err
 		}
@@ -43,7 +43,7 @@ func NewClient(user auth2.User) (*Client, error) {
 }
 
 // DefaultClient returns a Client associated with (but not authenticated with) the given user.
-func DefaultClient(user auth2.User) *Client {
+func DefaultClient(user auth.User) *Client {
 	return &Client{user, http.DefaultClient}
 }
 

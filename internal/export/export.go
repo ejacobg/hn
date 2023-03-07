@@ -1,8 +1,8 @@
 package export
 
 import (
+	"github.com/ejacobg/hn/internal/item"
 	"github.com/ejacobg/hn/internal/scrape"
-	"github.com/ejacobg/hn/item"
 	"golang.org/x/net/html"
 )
 
