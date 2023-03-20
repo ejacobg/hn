@@ -5,7 +5,7 @@ import (
 	"github.com/ejacobg/hn/internal/item"
 )
 
-// Shuffle will redistribute the items across all the given pages.
+// Shuffle will redistribute the items across all the given pages. It assumes that the pages are given in chronological order, with the oldest pages first.
 // Each page should have at most 30 items, and pages at the beginning of the list are allowed to take items from pages toward the end of the list.
 func Shuffle[I item.Itemizer](pages []item.Page[I], limit int) {
 	for i := 0; i < len(pages); i++ {
@@ -18,7 +18,8 @@ func Shuffle[I item.Itemizer](pages []item.Page[I], limit int) {
 				// If there aren't enough items to take, then take everything and check the next page.
 				if len(pages[j].Items) < take {
 					// Copy items over (this operation does not affect pages[j].Items).
-					pages[i].Items = append(pages[i].Items, pages[j].Items...)
+					// Items from the next page should be *prepended* to this page.
+					pages[i].Items = append(pages[j].Items, pages[i].Items...)
 
 					// Update our counter.
 					take -= len(pages[j].Items)
@@ -28,10 +29,11 @@ func Shuffle[I item.Itemizer](pages []item.Page[I], limit int) {
 					pages[j].Items = []I{}
 				} else {
 					// If there are too many items in the slice, copy only what we need.
-					pages[i].Items = append(pages[i].Items, pages[j].Items[:take]...)
+					// Copy the last items from the slice, and prepend them to the beginning of this one.
+					pages[i].Items = append(pages[j].Items[len(pages[j].Items)-take:], pages[i].Items...)
 
 					// Remove the items that we've taken.
-					pages[j].Items = pages[j].Items[take:]
+					pages[j].Items = pages[j].Items[:len(pages[j].Items)-take]
 
 					// We've filled the slice at this point, so we can exit the loop.
 					break

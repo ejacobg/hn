@@ -39,7 +39,7 @@ func Items[I item.Itemizer](directory, saveType, itemType string, user auth.User
 	// Begin exporting pages.
 	var exported []item.Page[item.Itemizer]
 	for page, more := 1, true; more; page++ {
-		fmt.Println("page", page)
+		fmt.Println("Page", page)
 		items, err := client.GetPage(saveType, itemType, page)
 		if err != nil {
 			return err
@@ -50,7 +50,7 @@ func Items[I item.Itemizer](directory, saveType, itemType string, user auth.User
 			break
 		}
 
-		fmt.Println(items)
+		// fmt.Println(items)
 
 		// Find the first item that we have saved before.
 		save := len(items) // If all the items are unseen, save all of them.

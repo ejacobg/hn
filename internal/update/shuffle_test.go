@@ -7,19 +7,15 @@ import (
 )
 
 // testItem implements the item.Itemizer interface.
-type testItem struct {
-	*item.Item
-	value int
-}
+type testItem int
 
 func (ti testItem) Itemize() *item.Item {
-	return ti.Item
+	return nil
 }
 
 func newPage(values ...int) (page item.Page[testItem]) {
-	page.Items = []testItem{}
 	for _, value := range values {
-		page.Items = append(page.Items, testItem{nil, value})
+		page.Items = append(page.Items, testItem(value))
 	}
 	return
 }
@@ -47,6 +43,8 @@ func TestShuffle(t *testing.T) {
 		{"First page filled", []item.Page[testItem]{newPage(), newPage(6, 7, 8, 9, 10), newPage()}, []int{5, 0, 0}},
 		{"Last page filled", []item.Page[testItem]{newPage(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), newPage(11, 12, 13, 14, 15), newPage()}, []int{5, 5, 5}},
 		{"Last page overfilled", []item.Page[testItem]{newPage(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), newPage(11, 12, 13, 14, 15), newPage(16, 17, 18, 19, 20)}, []int{5, 5, 10}},
+		{"Proper ordering", []item.Page[testItem]{newPage(4, 5), newPage(1, 2, 3)}, []int{5, 0}},
+		{"Take from end", []item.Page[testItem]{newPage(), newPage(6, 7, 8, 9, 10, 1, 2, 3, 4, 5)}, []int{5, 5}},
 	}
 
 	limit := 5
