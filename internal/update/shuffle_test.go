@@ -9,7 +9,7 @@ import (
 // testItem implements the item.Itemizer interface.
 type testItem int
 
-func (ti testItem) Itemize() *item.Item {
+func (testItem) Itemize() *item.Item {
 	return nil
 }
 

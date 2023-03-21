@@ -29,7 +29,7 @@ export <-h|-help>
 To view upvoted posts, a password or token is required.
 ```
 
-The `hn export` tool is used to transform a page of a user's saved submissions or comments, and returns them as JSON. 
+The `hn export` tool is used to transform a page of a user's saved submissions or comments, and returns them as JSON.
 
 `hn export` will print its results to the standard output. If you wish to save them to a file, just redirect the output.
 
@@ -63,12 +63,12 @@ Discussion: https://news.ycombinator.com/item?id=26385984
 f - Finish
 ```
 
-There are only 10 preset categories. An item can only have 1 category. 
+There are only 10 preset categories. An item can only have 1 category.
 
 When an item is given a category, an entry will be appended to the appropriate category file (`<category>.md`). All entries have the same form:
 
 ```
-[<status>] [<details>](id)
+[<status>] [<details>](<id>)
 ```
 
 You are free to add any other content to these category files. Only lines that are of the above format will be processed by the program.
@@ -88,11 +88,11 @@ The purpose of these category files is to provide a more convenient interface in
 [] [Ask HN: How to save/invest/deal with money?](33668398)
 [] [Ask HN: How do you invest your money?](31718948)
 
-# Uncategorized 
+# Uncategorized
 ...
 ```
 
-After the `hn sort` tool is run, the program will try to reconcile the state of the category files with the state of the export files. It will apply any changes made to the category files onto its respective item. For example, if I've made notes on one of the articles from above, I would update it in the `money.md` file:
+After the `hn sort` tool is run, the program will try to reconcile the state of the category files with the state of the export files (more on export files later). It will apply any changes made to the category files onto its respective item. For example, if I've made notes on one of the articles from above, I would update it in the `money.md` file:
 
 ```markdown
 # Accounting/Budgeting
@@ -104,12 +104,12 @@ After running the `hn sort` tool, the respective item would be updated in the ex
 
 ```json
 {
-    "id": "32495724",
-    "category": "money",
-    "state": "notes",
-    "title": "Accounting For Developers, Part I",
-    "url": "https://www.moderntreasury.com/journal/accounting-for-developers-part-i",
-    "discussion": "https://news.ycombinator.com/item?id=32495724"
+  "id": "32495724",
+  "category": "money",
+  "state": "notes",
+  "title": "Accounting For Developers, Part I",
+  "url": "https://www.moderntreasury.com/journal/accounting-for-developers-part-i",
+  "discussion": "https://news.ycombinator.com/item?id=32495724"
 }
 ```
 
@@ -133,11 +133,11 @@ update <-h|-help>
 To view upvoted posts, a password or token is required.
 ```
 
-The `hn update` command acts as a smarter version of `hn export`. It will continuously pull the saved items in your profile until it has caught up to the most recently saved ones. If you have partially exported some items already, the `hn update` command will ensure that it will not save any items already present in an export file. 
+The `hn update` command acts as a smarter version of `hn export`. It will continuously pull the saved items in your profile until it has caught up to the most recently saved ones. If you have partially exported some items already, the `hn update` command will ensure that it will not save any items already present in an export file.
 
 The `hn update` command saves its output to a separate directory, `updated/`. You should confirm that the output and filenames are good before moving these files to the `exported/` directory.
 
-HN displays your saved items 30 at a time. To enforce an upper limit of 30 items across all your export files, the `-shuffle` flag is provided. This will reorder all the items in your export files such that they will all contain 30 items except for the "last" one. The "last" file should contain your most recently saved items. 
+HN displays your saved items 30 at a time. To enforce an upper limit of 30 items across all your export files, the `-shuffle` flag is provided. This will reorder all the items in your export files such that they will all contain 30 items except for the "last" one. The "last" file should contain your most recently saved items.
 
 ## Directory Structure
 
@@ -165,9 +165,9 @@ ejacobg/
     └── ...
 ```
 
-By default, the `hn` tool assumes that it is being run in the root directory. The root directory (in this case `ejacobg/`) can be anything. It is assumed that only 1 user's data is saved in this directory. Underneath this directory are the `favorite/` and `upvoted/` directories, which hold their respective items. The `favorite/` and `upvoted/` directories have the same structure. 
+By default, the `hn` tool assumes that it is being run in the root directory. The root directory (in this case `ejacobg/`) can be anything. It is assumed that only 1 user's data is saved in this directory. Underneath this directory are the `favorite/` and `upvoted/` directories, which hold their respective items. The `favorite/` and `upvoted/` directories have the same structure.
 
-Underneath the `favorite/` and `updated/` directories are the `comments/` and `submissions/` directories. These contain the category files (`<category>.md`) which serve as an index into your exported items. 
+Underneath the `favorite/` and `updated/` directories are the `comments/` and `submissions/` directories. These contain the category files (`<category>.md`) which serve as an index into your exported items.
 
 The export files are found under the `exported/` directory. Under this scheme, these files are an incrementing sequence of integers, with 0's added to the start so that they are ordered correctly. The first file in the sequence (`01.json`) contains the oldest saved items (i.e. the first 30 items that you saved), while the last file in the sequence (`20.json`) contains the most recently saved items.
 
@@ -194,18 +194,18 @@ The above command will populate the `favorite/submissions/exported/updated/` dir
 
 ```json
 [
-	{
-		"id": "32540883",
-		"title": "Hacker News Official API",
-		"url": "https://github.com/HackerNews/API",
-		"discussion": "https://news.ycombinator.com/item?id=32540883"
-	},
-	{
-		"id": "22788236",
-		"title": "Show HN: Export HN Favorites to a CSV File",
-		"url": "item?id=22788236",
-		"discussion": "https://news.ycombinator.com/item?id=22788236"
-	}
+  {
+    "id": "32540883",
+    "title": "Hacker News Official API",
+    "url": "https://github.com/HackerNews/API",
+    "discussion": "https://news.ycombinator.com/item?id=32540883"
+  },
+  {
+    "id": "22788236",
+    "title": "Show HN: Export HN Favorites to a CSV File",
+    "url": "item?id=22788236",
+    "discussion": "https://news.ycombinator.com/item?id=22788236"
+  }
 ]
 
 ```
@@ -224,7 +224,7 @@ Once everything has been moved into the `favorite/submissions/exported/` directo
 hn sort favorite submissions
 ```
 
-This will display the sorting screen for all items. 
+This will display the sorting screen for all items.
 
 ```
 Title: Hacker News Official API
@@ -248,57 +248,4 @@ The only accepted input are the options shown above (`0` through `9` and `f`). A
 
 From here, you may repeat this process for all the other directories. As you read through all of your saved items, update their category file entries, then use `hn sort` to apply those changes back to the export files.
 
-If you've saved any more items since the last update, simply run `hn update` then `hn update -shuffle` to merge those new items into your database.
-
-## Examples
-
-```
-$ hn favorite submissions ejacobg
-[
-    {
-        "id": "32540883",
-        "title": "Hacker News Official API",
-        "url": "https://github.com/HackerNews/API",
-        "discussion": "https://news.ycombinator.com/item?id=32540883"
-    },
-    {
-        "id": "22788236",
-        "title": "Show HN: Export HN Favorites to a CSV File",
-        "url": "item?id=22788236",
-        "discussion": "https://news.ycombinator.com/item?id=22788236"
-    }
-]
-```
-
-```
-$ hn favorite comments ejacobg
-[
-    {
-        "id": "32543023",
-        "parent": "Hacker News Official API",
-        "text": [
-            "In response to people's complaints about the usability of the HN Firebase API: yes. We're going to eventually have a new API that returns a simple JSON version of any HN URL. At that point we'll phase out the Firebase API, with a generous deprecation period. I'd be curious to hear people's thoughts about what a generous deprecation period might be."
-        ],
-        "context": "https://news.ycombinator.com/context?id=32543023",
-        "discussion": "https://news.ycombinator.com/item?id=32540883"
-    }
-]
-```
-
-```
-$ hn upvoted submissions ejacobg -password=<password>
-[
-    {
-        "id": "8863",
-        "title": "My YC app: Dropbox - Throw away your USB drive",
-        "url": "http://www.getdropbox.com/u/2/screencast.html",
-        "discussion": "https://news.ycombinator.com/item?id=8863"
-    },
-    {
-        "id": "121003",
-        "title": "Ask HN: The Arc Effect",
-        "url": "item?id=121003",
-        "discussion": "https://news.ycombinator.com/item?id=121003"
-    }
-]
-```
+If you've saved any more items since the last update, simply run `hn update` then `hn update -shuffle` to merge those new items into your database. After merging, run `hn sort` to categorize all these new items.
