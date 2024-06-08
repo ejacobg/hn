@@ -2,6 +2,7 @@ package export
 
 import (
 	"errors"
+
 	"github.com/ejacobg/hn/internal/auth"
 	"github.com/ejacobg/hn/internal/item"
 	"github.com/ejacobg/hn/internal/scrape"
@@ -63,18 +64,18 @@ func fromSubmissions(nodes []*html.Node) (submissions []item.Story, err error) {
 func fromComment(node *html.Node) (item.Comment, error) {
 	comment := item.Comment{Item: &item.Item{}}
 
-	tr := scrape.GetElementWithClass(node, atom.Tr, "athing")
-	if tr == nil {
+	athingTr := scrape.GetElementWithClass(node, atom.Tr, "athing")
+	if athingTr == nil {
 		return comment, errors.New("fromComment: could not find tr.athing")
 	}
 
-	story := scrape.GetElementWithClass(tr, atom.Span, "onstory")
-	if story == nil {
+	onstorySpan := scrape.GetElementWithClass(athingTr, atom.Span, "onstory")
+	if onstorySpan == nil {
 		return comment, errors.New("fromComment: could not find tr.athing span.onstory")
 	}
 
 	var a *html.Node
-	for a = story.FirstChild; a != nil; a = a.NextSibling {
+	for a = onstorySpan.FirstChild; a != nil; a = a.NextSibling {
 		if a.Type == html.ElementNode && a.DataAtom == atom.A {
 			break
 		}
@@ -83,29 +84,29 @@ func fromComment(node *html.Node) (item.Comment, error) {
 		return comment, errors.New("fromComment: could not find tr.athing span.onstory > a")
 	}
 
-	div := scrape.GetElementWithClass(tr, atom.Div, "comment")
-	if div == nil {
+	commentDiv := scrape.GetElementWithClass(athingTr, atom.Div, "comment")
+	if commentDiv == nil {
 		return comment, errors.New("fromComment: could not find tr.athing div.comment")
 	}
 
-	var span *html.Node
-	for span = div.FirstChild; span != nil; span = span.NextSibling {
-		if span.Type == html.ElementNode && span.DataAtom == atom.Span {
+	var div *html.Node
+	for div = commentDiv.FirstChild; div != nil; div = div.NextSibling {
+		if div.Type == html.ElementNode && div.DataAtom == atom.Div {
 			break
 		}
 	}
-	if span == nil {
-		return comment, errors.New("fromComment: could not find tr.athing div.comment > span")
+	if div == nil {
+		return comment, errors.New("fromComment: could not find tr.athing div.comment > div")
 	}
 
 	// Grab all text nodes.
 	// The HTML returned from the server DOES NOT close its <p> tags, which results in an extra text node and whitespace being created after parsing.
 	// I will leave these artifacts alone since they are inconsequential to the results of the program. The tests will account for these errors though.
-	text := scrape.FindNodes(span, func(node *html.Node) (bool, bool) {
+	text := scrape.FindNodes(div, func(node *html.Node) (bool, bool) {
 		return node.Type == html.TextNode, false
 	})
 
-	for _, attr := range tr.Attr {
+	for _, attr := range athingTr.Attr {
 		if attr.Key == "id" {
 			comment.ID = attr.Val
 		}

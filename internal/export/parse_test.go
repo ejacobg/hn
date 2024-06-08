@@ -1,12 +1,13 @@
 package export
 
 import (
+	"strings"
+	"testing"
+
 	"github.com/ejacobg/hn/internal/auth"
 	"github.com/ejacobg/hn/internal/item"
 	"golang.org/x/net/html"
 	"golang.org/x/net/html/atom"
-	"strings"
-	"testing"
 )
 
 func TestFromSubmission(t *testing.T) {
@@ -114,106 +115,53 @@ func TestFromComment(t *testing.T) {
 	}{
 		{
 			Name:       "Top-Level Comment",
-			TextLength: 5,
-			HTML: `<tr class='athing' id='34210369'>
-                        <td class='ind'></td>
-                        <td valign="top" class="votelinks">
-                            <center><a id='up_34210369' class='clicky nosee'
-                                       href=''>
-                                <div class='votearrow' title='upvote'></div>
-                            </a></center>
-                        </td>
-                        <td class="default">
-                            <div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
-          <a href="user?id=thyrox" class="hnuser">thyrox</a> <span class="age" title="2023-01-01T20:14:51"><a
-                                    href="item?id=34210369">4 days ago</a></span> <span id="unv_34210369"></span>          <span
-                                    class='navs'>
-             | <a href="item?id=34206219">parent</a> | <a href="context?id=34210369" rel="nofollow">context</a> | <a
-                                    href="upvoted?id=quincinia&amp;comments=t&amp;p=2" aria-hidden="true">next</a><span
-                                    class="onstory"> |  on: <a href="item?id=34206219">Ask HN: Concepts that clicked only years after you...</a></span>          </span>
-                  </span></div>
-                            <br>
-                            <div class="comment">
-                                <span class="commtext c00">The power of follow ups (especially in sales)<p>One thing which held me back for a very long time was not following up with people who didn&#x27;t show much interest initially.<p>I wasted so many good leads thinking it is impolite to follow up with people after contacting them once. My whole life changed once I understood the power of follow ups and understanding that most people are so busy that it takes at least 6 reminders before most people will take any substantial action.<p>The reverse is also true. People say a lot of things and most of the times you never cross the bridge or reach it. Nowadays, I rarely argue about anything and don&#x27;t act on stuff until a person reminds me once or twice. This small filter can be like a miracle for saving your time and energy.</span>
-                                <div class='reply'></div>
-                            </div>
-                        </td>
-                    </tr>`,
+			TextLength: 2,
+			HTML: `<tr class='athing' id='40549297'>    <td class='ind'></td><td valign="top" class="votelinks">
+      <center><a id='up_40549297' class='clicky' href='vote?id=40549297&amp;how=up&amp;auth=2752e65950ea163f904b8e53ec476781578498d3&amp;goto=favorites%3Fid%3Dquincinia%26comments%3Dt#40549297'><div class='votearrow' title='upvote'></div></a></center>    </td><td class="default"><div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
+          <a href="user?id=ai_what" class="hnuser">ai_what</a> <span class="age" title="2024-06-01T21:41:02"><a href="item?id=40549297">6 days ago</a></span> <span id="unv_40549297"></span>          <span class='navs'>
+             | <a href="item?id=40548807">parent</a> | <a href="context?id=40549297" rel="nofollow">context</a> | <a href="fave?id=40549297&amp;un=t&amp;auth=2752e65950ea163f904b8e53ec476781578498d3">un&#8209;favorite</a><span class="onstory"> |  on: <a href="item?id=40548807">Ask HN: Best way to save text from dynamically gen...</a></span>          </span>
+                  </span></div><br><div class="comment">
+                  <div class="commtext c00">You could write a userscript for this, or go a step further and write a small browser extension.<p>If you use Joplin, there&#x27;s already a web to markdown plugin for browsers.</div>
+              <div class='reply'></div></div></td></tr>`,
 			Comment: item.Comment{
-				Item:       &item.Item{ID: "34210369"},
-				Story:      "Ask HN: Concepts that clicked only years after you...",
-				Context:    auth.BaseURL + "/context?id=34210369",
-				Discussion: auth.BaseURL + "/item?id=34206219",
+				Item:       &item.Item{ID: "40549297"},
+				Story:      "Ask HN: Best way to save text from dynamically gen...",
+				Context:    auth.BaseURL + "/context?id=40549297",
+				Discussion: auth.BaseURL + "/item?id=40548807",
 			},
 		},
 		{
 			Name:       "Thread Comment",
-			TextLength: 3,
-			HTML: `<tr class='athing' id='34188913'>
-                        <td class='ind'></td>
-                        <td valign="top" class="votelinks">
-                            <center><a id='up_34188913' class='clicky nosee'
-                                       href=''>
-                                <div class='votearrow' title='upvote'></div>
-                            </a></center>
-                        </td>
-                        <td class="default">
-                            <div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
-          <a href="user?id=nnadams" class="hnuser">nnadams</a> <span class="age" title="2022-12-30T19:27:03"><a
-                                    href="item?id=34188913">6 days ago</a></span> <span id="unv_34188913"></span>          <span
-                                    class='navs'>
-             | <a href="item?id=34188687">parent</a> | <a href="context?id=34188913" rel="nofollow">context</a> | <a
-                                    href="upvoted?id=quincinia&amp;comments=t&amp;p=2" aria-hidden="true">next</a><span
-                                    class="onstory"> |  on: <a
-                                    href="item?id=34186283">Why I'm still using Python</a></span>          </span>
-                  </span></div>
-                            <br>
-                            <div class="comment">
-                                <span class="commtext c00">I have embraced this workflow completely. I used to be more concerned about which language, but now I find I much more useful to just start immediately in Python. I spend most of the time working out the kinks and edge cases, instead of memory management or other logistics. Maybe ~75% of the time, that&#x27;s it, no need for further improvement.<p>Recently I chose to rewrite several thousands of lines of Python in Go, because we needed more speed and improved concurrency. Already having a working program and tests in Python was great. After figuring out a few Go-isms, it was a quick couple of days to port it all for big improvements.</span>
-                                <div class='reply'></div>
-                            </div>
-                        </td>
-                    </tr>`,
+			TextLength: 1,
+			HTML: `<tr class='athing' id='40255470'>    <td class='ind'></td><td valign="top" class="votelinks">
+      <center><a id='up_40255470' class='clicky' href='vote?id=40255470&amp;how=up&amp;auth=8b9a3141ee3086e03ba49a7f325f926d06a39bc8&amp;goto=favorites%3Fid%3Dquincinia%26comments%3Dt#40255470'><div class='votearrow' title='upvote'></div></a></center>    </td><td class="default"><div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
+          <a href="user?id=rozenmd" class="hnuser">rozenmd</a> <span class="age" title="2024-05-04T06:43:49"><a href="item?id=40255470">34 days ago</a></span> <span id="unv_40255470"></span>          <span class='navs'>
+             | <a href="item?id=40255457">parent</a> | <a href="context?id=40255470" rel="nofollow">context</a> | <a href="fave?id=40255470&amp;un=t&amp;auth=8b9a3141ee3086e03ba49a7f325f926d06a39bc8">un&#8209;favorite</a><span class="onstory"> |  on: <a href="item?id=40255209">A love letter to bicycle maintenance and repair</a></span>          </span>
+                  </span></div><br><div class="comment">
+                  <div class="commtext c00">When it&#x27;s broken, fix your bike - because when you&#x27;re broken, your bike will fix you.</div>
+              <div class='reply'></div></div></td></tr>`,
 			Comment: item.Comment{
-				Item:       &item.Item{ID: "34188913"},
-				Story:      "Why I'm still using Python",
-				Context:    auth.BaseURL + "/context?id=34188913",
-				Discussion: auth.BaseURL + "/item?id=34186283",
+				Item:       &item.Item{ID: "40255470"},
+				Story:      "A love letter to bicycle maintenance and repair",
+				Context:    auth.BaseURL + "/context?id=40255470",
+				Discussion: auth.BaseURL + "/item?id=40255209",
 			},
 		},
 		{
-			Name:       "1-Paragraph Comment",
-			TextLength: 1,
-			HTML: `<tr class='athing' id='34148489'>
-                        <td class='ind'></td>
-                        <td valign="top" class="votelinks">
-                            <center><a id='up_34148489' class='clicky nosee'
-                                       href=''>
-                                <div class='votearrow' title='upvote'></div>
-                            </a></center>
-                        </td>
-                        <td class="default">
-                            <div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
-          <a href="user?id=synu" class="hnuser">synu</a> <span class="age" title="2022-12-27T13:40:51"><a
-                                    href="item?id=34148489">9 days ago</a></span> <span id="unv_34148489"></span>          <span
-                                    class='navs'>
-             | <a href="item?id=34145680">parent</a> | <a href="context?id=34148489" rel="nofollow">context</a> | <a
-                                    href="upvoted?id=quincinia&amp;comments=t&amp;p=2" aria-hidden="true">next</a><span
-                                    class="onstory"> |  on: <a
-                                    href="item?id=34145680">I have reached Vim nirvana</a></span>          </span>
-                  </span></div>
-                            <br>
-                            <div class="comment">
-                                <span class="commtext c00">Vim enlightenment for me was learning to use it with all the default settings. Everywhere I go, it’s already set up just the way I like it.</span>
-                                <div class='reply'></div>
-                            </div>
-                        </td>
-                    </tr>`,
+			Name:       "Multi-Paragraph Comment",
+			TextLength: 4,
+			HTML: `<tr class='athing' id='32763668'>    <td class='ind'></td><td valign="top" class="votelinks">
+      <center><a id='up_32763668' class='clicky' href='vote?id=32763668&amp;how=up&amp;auth=f07e8ae8b12b97f6f3d25eab234cf6c1f83d9d66&amp;goto=favorites%3Fid%3Dquincinia%26comments%3Dt#32763668'><div class='votearrow' title='upvote'></div></a></center>    </td><td class="default"><div style="margin-top:2px; margin-bottom:-10px;"><span class="comhead">
+          <a href="user?id=nicbou" class="hnuser">nicbou</a> <span class="age" title="2022-09-08T10:34:55"><a href="item?id=32763668">on Sept 8, 2022</a></span> <span id="unv_32763668"></span>          <span class='navs'>
+             | <a href="item?id=32746922">parent</a> | <a href="context?id=32763668" rel="nofollow">context</a> | <a href="fave?id=32763668&amp;un=t&amp;auth=f07e8ae8b12b97f6f3d25eab234cf6c1f83d9d66">un&#8209;favorite</a><span class="onstory"> |  on: <a href="item?id=32746922">Excuse me but why are you eating so many frogs</a></span>          </span>
+                  </span></div><br><div class="comment">
+                  <div class="commtext c00">The topic is nice, but above all I thoroughly enjoy the writing.<p>I feel like I get a lot more done precisely because I don&#x27;t like to eat frogs. I sleep until I&#x27;m rested. I don&#x27;t touch my computer until I&#x27;ve had tea on the balcony. I work on what feels right, when it feels right, for as long as it feels right. If the weather is nice, I&#x27;ll hop on my bicycle and forget about work.<p>But when something sparks my interest, I have stores of energy to throw at it. My appetite for work is unrestrained by the frogs I&#x27;ve had for breakfast.<p>I embraced the fact that I am not a machine, and that my output is neither constant nor predictable. I&#x27;d rather respect the tides of my energy than fight against them.</div>
+              <div class='reply'></div></div></td></tr>`,
 			Comment: item.Comment{
-				Item:       &item.Item{ID: "34148489"},
-				Story:      "I have reached Vim nirvana",
-				Context:    auth.BaseURL + "/context?id=34148489",
-				Discussion: auth.BaseURL + "/item?id=34145680",
+				Item:       &item.Item{ID: "32763668"},
+				Story:      "Excuse me but why are you eating so many frogs",
+				Context:    auth.BaseURL + "/context?id=32763668",
+				Discussion: auth.BaseURL + "/item?id=32746922",
 			},
 		},
 	}
